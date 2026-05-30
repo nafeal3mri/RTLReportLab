@@ -1,0 +1,38 @@
+Metadata-Version: 2.4
+Name: RTLReportLab
+Version: 4.5.1
+Summary: ReportLab fork with RTL / BiDi (Arabic) text support and extra flowables.
+Home-page: https://github.com/nafeal3mri/RTLReportLab
+Author: nafeal3mri
+License: BSD-3-Clause
+Project-URL: Source, https://github.com/nafeal3mri/RTLReportLab
+Project-URL: Issues, https://github.com/nafeal3mri/RTLReportLab/issues
+Keywords: reportlab pdf rtl bidi arabic reshaper
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Printing
+Classifier: Topic :: Text Processing :: Markup
+Classifier: Topic :: Multimedia :: Graphics
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: pillow>=10.0.0
+Requires-Dist: python-bidi>=0.4.2
+Requires-Dist: arabic-reshaper>=3.0.0
+Requires-Dist: uharfbuzz>=0.30.0
+Dynamic: author
+Dynamic: classifier
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
