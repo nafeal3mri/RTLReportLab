@@ -10,6 +10,10 @@ flowables such as `Grid`.
 > additional helpers on top of it. All of ReportLab's own APIs
 > (`canvas`, `platypus`, `pdfgen`, `pdfbase`, …) remain available under the
 > `RTLReportLab` namespace.
+>
+> **This is an unofficial, community-maintained fork. It is not affiliated with,
+> endorsed by, or sponsored by ReportLab Europe Ltd.** "ReportLab" is a trademark
+> of its respective owner.
 
 ---
 
@@ -205,3 +209,14 @@ ReportLab is the underlying open-source PDF generation toolkit; this project
 extends it with RTL/BiDi text handling and the additional flowables documented
 above. Please refer to the official ReportLab documentation at
 [reportlab.com](https://www.reportlab.com) for the full PDF/Platypus API.
+
+**This repository is an unofficial fork.** It is **not affiliated with, endorsed
+by, or sponsored by ReportLab Europe Ltd.** It simply builds on their
+open-source library. "ReportLab" and any related marks belong to their
+respective owner.
+
+## License
+
+This project includes and is distributed under the original ReportLab BSD
+license. See the [`LICENSE`](LICENSE) file for the full license text. Any
+modifications and additions in this fork are released under the same terms.
