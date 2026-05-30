@@ -64,7 +64,7 @@ pdfmetrics.registerFont(TTFont('ArabicFont', font_path))
 ## Usage
 
 ### `text_to_rl_markup`
-
+ 
 Converts a plain text string containing **emojis** into ReportLab `Paragraph`
 markup, replacing each emoji with an inline `<img>` tag rendered as a color PNG.
 If the text has no emoji it is returned unchanged.
