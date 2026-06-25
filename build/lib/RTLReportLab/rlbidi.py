@@ -12,6 +12,11 @@ try:
         resolve_neutral_types, resolve_implicit_levels,
         reorder_resolved_levels, apply_mirroring, PARAGRAPH_LEVELS,
     )
+    try:
+        from bidi.algorithm import _embedding_direction
+    except ImportError:                       # pragma: no cover - version drift
+        def _embedding_direction(level):
+            return 'L' if (level % 2) == 0 else 'R'
     _bidi_available = True
 except ImportError:
     _bidi_available = False
@@ -41,9 +46,17 @@ def _contains_arabic(text):
 
 
 def _reshape_arabic(text):
-    """Apply Arabic letter reshaping if text contains Arabic characters."""
+    """Apply Arabic letter reshaping if text contains Arabic characters.
+
+    arabic_reshaper can raise (e.g. ``IndexError``) on some emoji / combining
+    sequences; fall back to the unreshaped text rather than letting the whole
+    PDF build crash.
+    """
     if _reshaper_available and _contains_arabic(text):
-        return _arabic_reshaper.reshape(text)
+        try:
+            return _arabic_reshaper.reshape(text)
+        except Exception:
+            return text
     return text
 
 
@@ -102,6 +115,20 @@ def log2vis(text, base_direction='RTL', clean=True, positions_V_to_L=None):
     explicit_embed_and_overrides(storage, False)
     resolve_weak_types(storage, False)
     resolve_neutral_types(storage, False)
+
+    # python-bidi only guarantees the types L, R, EN, AN survive into
+    # resolve_implicit_levels.  In practice a few inputs slip a still-neutral or
+    # format/boundary type (B, S, WS, ON, BN, NSM, isolate types, …) through the
+    # weak/neutral passes — e.g. an emoji <img> placeholder, a paragraph that was
+    # split mid-run, or characters this bidi build mishandles — and the next step
+    # aborts with `AssertionError: <type> not allowed here`.  Coerce any such
+    # straggler to its embedding direction (the UBA N2 fallback) so the algorithm
+    # can never assert, whatever the input or library version.
+    _ALLOWED = ('L', 'R', 'EN', 'AN')
+    for _ch in storage['chars']:
+        if _ch['type'] not in _ALLOWED:
+            _ch['type'] = _embedding_direction(_ch['level'])
+
     resolve_implicit_levels(storage, False)
 
     # Inject original indices before reordering

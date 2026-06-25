@@ -177,7 +177,14 @@ try:
         fL = fL.__self__
         V2L = []
         bidi = log2vis(text, base_direction=direction, clean=clean, positions_V_to_L=V2L)
-        fsL = [(w[1+k][0],''.join((ks[1] for ks in g))) for k, g in groupby(((fL[V2L[i]],v) for i,v in enumerate(bidi)),key=itemgetter(0))]
+        # log2vis may reshape Arabic (changing the string length) and, with some
+        # python-bidi builds, mis-handle exotic codepoints (emoji, isolates).  Guard
+        # the visual→logical remap so a bad index / type can never abort the PDF
+        # build — fall back to the un-reordered word instead.
+        try:
+            fsL = [(w[1+k][0],''.join((ks[1] for ks in g))) for k, g in groupby(((fL[V2L[i]],v) for i,v in enumerate(bidi)),key=itemgetter(0))]
+        except (IndexError, KeyError):
+            return w
         if not fsL:
             # log2vis cleaned away all characters (e.g. TAG chars from flag emoji
             # grapheme clusters that weren't caught by the emoji splitter).

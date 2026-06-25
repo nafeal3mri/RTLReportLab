@@ -381,6 +381,13 @@ class Grid(Flowable):
         )
         self._width = min(total_w, availWidth)
         self._height = total_h
+        # Last-resort: a grid marked for force-fit (taller than a whole page and
+        # unsplittable) reports a clamped height so the frame accepts it instead
+        # of looping forever; its content overflows the frame but the export
+        # completes rather than raising a LayoutError.
+        clamp = getattr(self, '_clamp_h', None)
+        if clamp is not None and self._height > clamp:
+            self._height = clamp
         return (self._width, self._height)
 
     # ── split ─────────────────────────────────────────────────────────────────
@@ -417,7 +424,16 @@ class Grid(Flowable):
             pieces = self._split_first_row(availWidth, availHeight)
             if pieces:
                 return pieces
-            # Truly unsplittable — let doctemplate push us to the next page
+            # Nothing splits and the grid is taller than the frame.  Defer once
+            # so the doctemplate can retry on a fresh, full-height frame where
+            # it may fit or split.  If we are asked to split *again* and still
+            # cannot, the grid is larger than a whole page (e.g. a single image
+            # taller than the frame): force it to draw — overflowing — rather
+            # than raising a LayoutError and aborting the whole export.
+            if getattr(self, '_force_fit', False):
+                self._clamp_h = availHeight
+                return [self]
+            self._force_fit = True
             return []
 
         if fit_rows >= len(self._raw_data):
